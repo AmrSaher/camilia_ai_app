@@ -11,7 +11,7 @@
             class="flex items-center gap-2"
         >
             <i class="bi bi-life-preserver text-sm mt-1"></i>
-            <h1 class="text-xl font-medium">Camilia AI</h1>
+            <h1 class="text-xl font-bold">Camilia AI</h1>
         </NuxtLink>
         <nav
             class="
@@ -19,6 +19,7 @@
                 max-sm:top-20 max-sm:right-5 max-sm:bg-white
                 max-sm:p-3 max-sm:rounded-md max-sm:flex-col
                 max-sm:min-w-60 max-sm:overflow-hidden transition-all
+                max-sm:shadow-sm
             "
             :class="{
                 'active-menu': !isActive,
@@ -37,7 +38,7 @@
                     <NuxtLink to="/" class="hover:font-medium transition-all">Task Manager</NuxtLink>
                 </li>
                 <li>
-                    <NuxtLink to="/" class="hover:font-medium transition-all">Calendar</NuxtLink>
+                    <NuxtLink to="/calendar" class="hover:font-medium transition-all">Calendar</NuxtLink>
                 </li>
                 <li>
                     <NuxtLink to="/" class="hover:font-medium transition-all">History</NuxtLink>

@@ -3,7 +3,7 @@
         class="
             Header sticky top-0 left-0 w-full h-16
             border-b border-gray-200 flex items-center
-            justify-between px-5
+            justify-between px-5 z-50 bg-[#FAFAFA]
         "
     >
         <NuxtLink
@@ -46,13 +46,13 @@
             <ul class="flex items-center gap-5" v-if="!auth">
                 <li>
                     <NuxtLink
-                        to="/"
+                        to="/login"
                         class="px-3 py-2 rounded-md bg-white max-sm:bg-[#FAFAFA]"
                     >Login</NuxtLink>
                 </li>
                 <li>
                     <NuxtLink
-                        to="/"
+                        to="/signup"
                         class="px-3 py-2 rounded-md bg-white max-sm:bg-[#FAFAFA]"
                     >Signup</NuxtLink>
                 </li>
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-const auth = ref(true)
+const auth = ref(false)
 const isActive = ref(false)
 
 const toggleMenu = () => {

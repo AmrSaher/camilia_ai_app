@@ -28,10 +28,18 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
   ],
+  modules: [
+    '@pinia/nuxt',
+  ],
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
+    },
+  },
+  runtimeConfig: {
+    public: {
+      BASE_API_URL: process.env.BASE_API_URL,
     },
   },
 })

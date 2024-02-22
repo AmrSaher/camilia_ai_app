@@ -28,7 +28,7 @@
                 class="
                     flex items-center gap-5 max-sm:flex-col
                 "
-                v-if="auth"
+                v-if="authStore.isAuthed()"
             >
                 <li>
                     <NuxtLink to="/" class="hover:font-medium transition-all">Home</NuxtLink>
@@ -43,7 +43,7 @@
                     <NuxtLink to="/" class="hover:font-medium transition-all">History</NuxtLink>
                 </li>
             </ul>
-            <ul class="flex items-center gap-5" v-if="!auth">
+            <ul class="flex items-center gap-5" v-if="!authStore.isAuthed()">
                 <li>
                     <NuxtLink
                         to="/login"
@@ -57,7 +57,7 @@
                     >Signup</NuxtLink>
                 </li>
             </ul>
-            <NuxtLink to="/" v-if="auth">
+            <NuxtLink to="/" v-if="authStore.isAuthed()">
                 <img
                     src="https://www.bing.com/th?id=OIP.w6Cs6qz234c71XloeqKdwgHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
                     alt="profile image"
@@ -72,8 +72,8 @@
 </template>
 
 <script setup>
-const auth = ref(false)
 const isActive = ref(false)
+const authStore = useAuthStore()
 
 const toggleMenu = () => {
     isActive.value = !isActive.value

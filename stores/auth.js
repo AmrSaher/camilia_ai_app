@@ -17,11 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const getUser = async () => {
-        const { data } = await useApi('/auth/user', {
-            headers: {
-                Authorization: 'Bearer ' + getJWTToken(),
-            },
-        })
+        const { data } = await useApi('/auth/user', {}, true)
         user.value = data.value
     }
 
@@ -54,10 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
     const logout = async () => {
         await useApi('/auth/logout', {
             method: 'post',
-            headers: {
-                Authorization: 'Bearer ' + getJWTToken(),
-            },
-        })
+        }, true)
 
         user.value = {}
         clearJWTToken()

@@ -3,7 +3,7 @@
         class="
             Header sticky top-0 left-0 w-full h-16
             border-b border-gray-200 flex items-center
-            justify-between px-5 z-50 bg-[#FAFAFA]
+            justify-between px-5 z-40 bg-[#FAFAFA]
         "
     >
         <NuxtLink
@@ -58,6 +58,15 @@
                     >Signup</NuxtLink>
                 </li>
             </ul>
+            <ul class="flex items-center gap-5" v-else>
+                <li>
+                    <a
+                        href="#"
+                        class="px-3 py-2 rounded-md bg-white max-sm:bg-[#FAFAFA]"
+                        @click="handleLogoutSubmit"
+                    >Logout</a>
+                </li>
+            </ul>
             <NuxtLink to="/" v-if="authStore.isAuthed()">
                 <img
                     src="https://www.bing.com/th?id=OIP.w6Cs6qz234c71XloeqKdwgHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
@@ -78,6 +87,10 @@ const authStore = useAuthStore()
 
 const toggleMenu = () => {
     isActive.value = !isActive.value
+}
+
+const handleLogoutSubmit = async () => {
+    if (confirm('Are you sure?')) await authStore.logout()
 }
 </script>
 

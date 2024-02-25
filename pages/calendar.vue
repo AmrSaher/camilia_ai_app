@@ -1,5 +1,9 @@
 <template>
-    <CalendarAddEventModal v-if="isAddEventModalOpened" @close="toggleAddEventModal" />
+    <CalendarEventAddModal
+        v-if="isAddEventModalOpened"
+        @close="toggleAddEventModal"
+        @refresh="refresh"
+    />
     <div class="Calendar">
         <UIContainer class="">
             <div class="w-full mb-5">
@@ -24,11 +28,14 @@
                 </header>
                 <ul class="flex flex-col gap-3">
                     <CalendarEvent
-                        :event="{
-                            title: 'Product review meeting',
-                        }"
+                        v-for="event in events"
+                        :key="event.id"
+                        :event="event"
+                        v-if="!loading"
+                        @refresh="refresh"
                     />
-                    <!-- <p class="text-sm text-gray-500 mx-auto">No events today</p> -->
+                    <UILoader width="35" class="mx-auto" v-if="loading" />
+                    <p class="text-sm text-gray-500 mx-auto" v-if="!events?.length && !loading">No events this day</p>
                 </ul>
             </div>
         </UIContainer>
@@ -45,9 +52,26 @@ definePageMeta({
     ],
 })
 
-const date = ref((new Date()).toLocaleDateString('en-US'))
+const date = ref((new Date()))
 const isAddEventModalOpened = ref(false)
+const loading = ref(false)
 
+const { data:events , error, refresh } = useAsyncData('events', async () => {
+    loading.value = true
+    const { data, error } = await useApi('/events/get', {
+        method: 'post',
+        body: {
+            date: date.value,
+        },
+    }, true)
+    loading.value = false
+
+    return data.value
+}, {
+    watch: [
+        date,
+    ],
+})
 const toggleAddEventModal = () => {
     isAddEventModalOpened.value = !isAddEventModalOpened.value
 }

@@ -26,6 +26,7 @@
                         outline-none
                     "
                     v-model="formData.start"
+                    :max="formData.end"
                 />
                 <span class="text-sm text-red-500">{{ formErrors.start[0] }}</span>
             </div>
@@ -40,6 +41,7 @@
                         outline-none
                     "
                     v-model="formData.end"
+                    :min="formData.start"
                 />
                 <span class="text-sm text-red-500">{{ formErrors.end[0] }}</span>
             </div>
@@ -51,6 +53,7 @@
 <script setup>
 const emit = defineEmits([
     'close',
+    'refresh',
 ])
 const formData = ref({
     title: '',
@@ -79,8 +82,9 @@ const handleSubmit = async () => {
             start: errors?.start ?? [],
             end: errors?.end ?? [],
         }
+    } else {
+        emit('close')
+        emit('refresh')
     }
-    
-    emit('close')
 }
 </script>

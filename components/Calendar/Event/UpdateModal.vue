@@ -86,8 +86,8 @@ const handleSubmit = async () => {
             end: errors?.end ?? [],
         }
     } else {
-        emit('close')
         emit('refresh')
+        emit('close')
     }
 }
 </script>

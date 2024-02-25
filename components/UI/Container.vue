@@ -1,5 +1,5 @@
 <template>
-    <div class="UIContainer px-4 mx-auto">
+    <div class="UIContainer px-4 mx-auto max-sm:px-0">
         <slot />
     </div>
 </template>

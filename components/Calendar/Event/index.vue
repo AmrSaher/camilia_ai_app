@@ -37,10 +37,13 @@ const endTime = moment(event.end).format('hh:mm A')
 const isUpdateEventModalOpened = ref(false)
 
 const handleDeleteSubmit = async () => {
-    if (confirm('Are you sure?')) await useApi('/events/' + event.id, {
-        method: 'delete',
-    }, true)
-    emit('refresh')
+    if (confirm('Are you sure?')) {
+        await useApi('/events/' + event.id, {
+            method: 'delete',
+        }, true)
+        emit('refresh')
+    }
+    
 }
 const toggleUpdateEventModal = () => {
     isUpdateEventModalOpened.value = !isUpdateEventModalOpened.value

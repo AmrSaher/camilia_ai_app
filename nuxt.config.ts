@@ -39,6 +39,7 @@ export default defineNuxtConfig({
   ],
   modules: [
     '@pinia/nuxt',
+    '@kevinmarrec/nuxt-pwa',
   ],
   postcss: {
     plugins: {
@@ -49,6 +50,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       BASE_API_URL: process.env.BASE_API_URL,
+    },
+  },
+  pwa: {
+    manifest: {
+      name: 'Camilia AI',
+      lang: 'en',
+      useWebmanifestExtension: false,
     },
   },
 })

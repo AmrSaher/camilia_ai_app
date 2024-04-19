@@ -1,5 +1,5 @@
 <template>
-    <div class="font-medium">
+    <div class="TasksSections font-medium">
         <header class="flex items-center justify-between w-full">
             <h2 class="text-lg">Sections</h2>
             <button class="text-2xl">

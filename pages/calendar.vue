@@ -7,7 +7,7 @@
     <div class="Calendar">
         <UIContainer>
             <div class="w-full mb-5">
-                <h2 class="font-bold text-3xl mb-5">February 2024</h2>
+                <h2 class="font-bold text-3xl mb-5">{{ now.month }} {{ now.year }}</h2>
                 <div class="max-w-96 mx-auto">
                     <DatePicker
                         borderless
@@ -55,6 +55,19 @@ definePageMeta({
 const date = ref((new Date()))
 const isAddEventModalOpened = ref(false)
 const isLoading = ref(false)
+const now = computed(() => {
+    const currentDate = new Date(date.value)
+    const currentMonth = currentDate.getMonth()
+    const currentYear = currentDate.getFullYear()
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+
+    return {
+        month: monthNames[currentMonth],
+        year: currentYear,
+    } 
+})
 
 const { data:events , error, refresh } = useAsyncData('events', async () => {
     isLoading.value = true

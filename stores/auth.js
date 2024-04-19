@@ -60,7 +60,10 @@ export const useAuthStore = defineStore('auth', () => {
 
     const isAuthed = async () => {
         loaderStore.startLoading()
-        if (!getJWTToken()) return false
+        if (!getJWTToken()) {
+            loaderStore.stopLoading()
+            return false
+        }
 
         const decoded = await validateToken()
         loaderStore.stopLoading()

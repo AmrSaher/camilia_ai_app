@@ -1,7 +1,7 @@
 <template>
     <div
         class="
-            Modal fixed top-0 left-0 w-full h-full
+            UIModal fixed top-0 left-0 w-full h-full
             bg-[#64748b33] z-50 flex items-center
             justify-center p-4
         "

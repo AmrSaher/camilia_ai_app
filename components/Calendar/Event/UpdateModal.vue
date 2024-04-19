@@ -1,5 +1,5 @@
 <template>
-    <UIModal title="Update event" @close="emit('close')">
+    <UIModal class="CalendarEventUpdateModal" title="Update event" @close="emit('close')">
         <form @submit.prevent="handleSubmit" class="flex flex-col items-center gap-5 w-full">
             <div class="flex flex-col gap-1 w-full">
                 <label for="title" class="font-medium">Title</label>

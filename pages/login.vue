@@ -30,7 +30,18 @@
                 />
                 <span class="text-sm text-red-500">{{ formErrors.password[0] }}</span>
             </div>
-            <input type="submit" value="Log in" class="text-md font-bold w-full p-2 rounded-xl bg-white cursor-pointer">
+            <button
+                type="submit"
+                class="
+                    text-md font-bold w-full p-2 rounded-xl 
+                    bg-white cursor-pointer flex justify-center
+                    items-center
+                "
+                :disabled="isLoading"
+            >
+                <span v-if="!isLoading">Log in</span>
+                <UILoader width="30" v-else />
+            </button>
         </form>
         <NuxtLink to="/" class="text-gray-500 text-sm">Forgot your password?</NuxtLink>
     </div>
@@ -53,10 +64,14 @@ const currentFormErrors = ref({
     password: [],
 })
 const formErrors = ref(currentFormErrors.value)
+const isLoading = ref(false)
 
 const handleSubmit = async () => {
+    isLoading.value = true
     formErrors.value = currentFormErrors.value
     const errors = await authStore.login(formData.value)
+    isLoading.value = false
+    
     formErrors.value = {
         email: errors?.email ?? [],
         password: errors?.password ?? [],

@@ -45,7 +45,18 @@
                 />
                 <span class="text-sm text-red-500">{{ formErrors.end[0] }}</span>
             </div>
-            <input type="submit" value="Add" class="text-md font-bold w-full p-2 rounded-xl bg-white cursor-pointer">
+            <button
+                type="submit"
+                class="
+                    text-md font-bold w-full p-2 rounded-xl 
+                    bg-white cursor-pointer flex justify-center
+                    items-center
+                "
+                :disabled="isLoading"
+            >
+                <span v-if="!isLoading">Add</span>
+                <UILoader width="30" v-else />
+            </button>
         </form>
     </UIModal>
 </template>
@@ -66,13 +77,16 @@ const currentFormErrors = ref({
     end: [],
 })
 const formErrors = ref(currentFormErrors.value)
+const isLoading = ref(false)
 
 const handleSubmit = async () => {
+    isLoading.value = true
     formErrors.value = currentFormErrors.value
     const { data, error } = await useApi('/events', {
         method: 'post',
         body: formData.value,
     }, true)
+    isLoading.value = false
 
     // Check if any errors return
     const errors = error?.value?.data?.errors

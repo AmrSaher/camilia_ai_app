@@ -5,7 +5,7 @@
         @refresh="refresh"
     />
     <div class="Calendar">
-        <UIContainer class="">
+        <UIContainer>
             <div class="w-full mb-5">
                 <h2 class="font-bold text-3xl mb-5">February 2024</h2>
                 <div class="max-w-96 mx-auto">
@@ -31,11 +31,11 @@
                         v-for="event in events"
                         :key="event.id"
                         :event="event"
-                        v-if="!loading"
+                        v-if="!isLoading"
                         @refresh="refresh"
                     />
-                    <UILoader width="35" class="mx-auto" v-if="loading" />
-                    <p class="text-sm text-gray-500 mx-auto" v-if="!events?.length && !loading">No events this day</p>
+                    <UILoader width="35" class="mx-auto" v-if="isLoading" />
+                    <p class="text-sm text-gray-500 mx-auto" v-if="!events?.length && !isLoading">No events this day</p>
                 </ul>
             </div>
         </UIContainer>
@@ -54,17 +54,17 @@ definePageMeta({
 
 const date = ref((new Date()))
 const isAddEventModalOpened = ref(false)
-const loading = ref(false)
+const isLoading = ref(false)
 
 const { data:events , error, refresh } = useAsyncData('events', async () => {
-    loading.value = true
+    isLoading.value = true
     const { data, error } = await useApi('/events/get', {
         method: 'post',
         body: {
             date: date.value,
         },
     }, true)
-    loading.value = false
+    isLoading.value = false
 
     return data.value
 }, {

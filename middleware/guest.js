@@ -1,5 +1,5 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-    const jwt = useCookie('jwt').value
+export default defineNuxtRouteMiddleware(async (to, from) => {
+    const authStore = useAuthStore()
 
-    if (jwt) return navigateTo('/')
+    if (await authStore.isAuthed()) return navigateTo('/')
 })

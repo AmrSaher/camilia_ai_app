@@ -29,13 +29,13 @@
                 class="
                     flex items-center gap-5 max-sm:flex-col
                 "
-                v-if="authStore.isAuthed()"
+                v-if="isAuthed"
             >
                 <li>
                     <NuxtLink to="/" class="hover:font-medium transition-all">Home</NuxtLink>
                 </li>
                 <li>
-                    <NuxtLink to="/" class="hover:font-medium transition-all">Task Manager</NuxtLink>
+                    <NuxtLink to="/tasks" class="hover:font-medium transition-all">Task Manager</NuxtLink>
                 </li>
                 <li>
                     <NuxtLink to="/calendar" class="hover:font-medium transition-all">Calendar</NuxtLink>
@@ -44,7 +44,7 @@
                     <NuxtLink to="/" class="hover:font-medium transition-all">History</NuxtLink>
                 </li>
             </ul>
-            <ul class="flex items-center gap-5" v-if="!authStore.isAuthed()">
+            <ul class="flex items-center gap-5" v-if="!isAuthed">
                 <li>
                     <NuxtLink
                         to="/login"
@@ -67,7 +67,7 @@
                     >Logout</a>
                 </li>
             </ul>
-            <NuxtLink to="/" v-if="authStore.isAuthed()">
+            <NuxtLink to="/" v-if="isAuthed">
                 <img
                     src="https://www.bing.com/th?id=OIP.w6Cs6qz234c71XloeqKdwgHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
                     alt="profile image"
@@ -84,6 +84,9 @@
 <script setup>
 const isActive = ref(false)
 const authStore = useAuthStore()
+const isAuthed = computed(() => {
+    return authStore.getJWTToken() ? true : false
+})
 
 const toggleMenu = () => {
     isActive.value = !isActive.value

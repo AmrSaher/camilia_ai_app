@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', () => {
     const user = ref({})
     const token = ref({})
+    const loaderStore = useLoaderStore()
 
     const cacheJWTToken = (jwt) => {
         token.value = jwt
@@ -54,10 +55,27 @@ export const useAuthStore = defineStore('auth', () => {
 
         user.value = {}
         clearJWTToken()
-        navigateTo('/')
+        navigateTo('/login')
     }
 
-    const isAuthed = () => getJWTToken() ? true : false
+    const isAuthed = async () => {
+        loaderStore.startLoading()
+        if (!getJWTToken()) return false
+
+        const decoded = await validateToken()
+        loaderStore.stopLoading()
+        return decoded
+    }
+
+    const validateToken = async () => {
+        const { data, error } = await useApi('/token/validate/' + getJWTToken())
+        const decoded = data.value?.decoded
+
+        if (!decoded) {
+            clearJWTToken()
+        }
+        return decoded
+    }
 
     // const updateProfile = async (attrs) => {
     //     const { error } = await useApi('/profile', {

@@ -101,7 +101,7 @@ onMounted(() => {
         if (voice) {
             speech.voice = voice
         } else {
-            if (process.client) location.reload()
+            console.error('Camilia voice does not exist!')
         }
     }
 })

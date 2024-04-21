@@ -34,7 +34,7 @@
             placeholder="Message Camilia..."
             class="
                 w-full bg-[#FAFAFA] border border-gray-200 p-3 rounded-xl
-                outline-none
+                outline-none pr-[5.5rem]
             "
             v-model="message"
         />
@@ -81,6 +81,7 @@ onMounted(() => {
     })
     recognition.addEventListener('end', async () => {
         isRecording.value = false
+        if (!message.value) return
         messages.value.push({
             content: message.value,
             role: 'user',
@@ -111,6 +112,7 @@ const record = () => {
     recognition.start()
 }
 const submitMessage = async () => {
+    if (!message.value) return
     messages.value.push({
         content: message.value,
         role: 'user',
@@ -118,6 +120,7 @@ const submitMessage = async () => {
     await askAI()
 }
 const askAI = async () => {
+    message.value = ''
     isAskingAI.value = true
     const data = await useFetch('https://api.together.xyz/v1/chat/completions', {
         method: 'post',
@@ -144,7 +147,6 @@ const askAI = async () => {
             Authorization: 'Bearer a1f778806521ee5433f331997715ed144bd4b92b3c7031de40f27819e75a5d5e'
         },
     })
-    message.value = ''
     const msg = data.data.value.choices[0].message
     const messageContent = msg.content
     if (messageContent[0] == '{') {

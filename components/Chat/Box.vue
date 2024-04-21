@@ -20,7 +20,7 @@
     <div
       class="absolute top-[80px] left-0 w-full h-[calc(100%-80px)] rounded-bl-lg rounded-br-lg flex flex-col justify-between"
     >
-      <div class="flex flex-col gap-2 p-2 overflow-y-auto">
+      <div class="flex flex-col gap-2 p-2 overflow-y-auto" ref="chatBox">
         <p class="w-full flex" :style="`justify-content: ${msg.role == 'user' ? 'end' : 'start'}`" v-for="msg in messages" :key="msg">
           <span
             class="p-2 rounded-md"
@@ -59,6 +59,7 @@ const { isOpened } = defineProps([
 const emit = defineEmits([
     'close'
 ])
+const chatBox = ref()
 const promptsStore = usePromptsStore()
 const isRecording = ref(false)
 const messages = ref([])
@@ -100,10 +101,12 @@ onMounted(() => {
         if (voice) {
             speech.voice = voice
         } else {
-            console.error('Voice not found.')
+            if (process.client) location.reload()
         }
     }
 })
+
+watch(messages.value, () => setTimeout(() => scrollDownChatBox(), 50))
 
 const close = () => emit('close')
 const record = () => {
@@ -122,7 +125,8 @@ const submitMessage = async () => {
 const askAI = async () => {
     message.value = ''
     isAskingAI.value = true
-    const data = await useFetch('https://api.together.xyz/v1/chat/completions', {
+    const { LLM_API_URL, LLM_API_KEY } = useRuntimeConfig().public
+    const data = await useFetch(LLM_API_URL, {
         method: 'post',
         watch: false,
         body: {
@@ -144,7 +148,7 @@ const askAI = async () => {
             ],
         },
         headers: {
-            Authorization: 'Bearer a1f778806521ee5433f331997715ed144bd4b92b3c7031de40f27819e75a5d5e'
+            Authorization: 'Bearer ' + LLM_API_KEY,
         },
     })
     const msg = data.data.value.choices[0].message
@@ -156,7 +160,7 @@ const askAI = async () => {
             content: 'Appointment booked successfully!',
             role: 'assistant',
         })
-        const { data, error } = await useApi('/events', {
+        await useApi('/events', {
             method: 'post',
             body: {
                 title: appointment.name,
@@ -173,5 +177,8 @@ const askAI = async () => {
 const say = (text) => {
     speech.text = text
     window.speechSynthesis.speak(speech)
+}
+const scrollDownChatBox = () => {
+    chatBox.value.scrollTop = chatBox.value.scrollHeight
 }
 </script>

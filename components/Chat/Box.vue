@@ -82,9 +82,9 @@ onMounted(() => {
     })
     recognition.addEventListener('end', async () => {
         isRecording.value = false
-        if (!message.value) return
+        if (!message.value.trim()) return
         messages.value.push({
-            content: message.value,
+            content: message.value.trim(),
             role: 'user',
         })
         await askAI()
@@ -115,9 +115,9 @@ const record = () => {
     recognition.start()
 }
 const submitMessage = async () => {
-    if (!message.value) return
+    if (!message.value.trim()) return
     messages.value.push({
-        content: message.value,
+        content: message.value.trim(),
         role: 'user',
     })
     await askAI()
@@ -126,7 +126,7 @@ const askAI = async () => {
     message.value = ''
     isAskingAI.value = true
     const { LLM_API_URL, LLM_API_KEY } = useRuntimeConfig().public
-    const data = await useFetch(LLM_API_URL, {
+    const { data } = await useFetch(LLM_API_URL, {
         method: 'post',
         watch: false,
         body: {
@@ -151,7 +151,7 @@ const askAI = async () => {
             Authorization: 'Bearer ' + LLM_API_KEY,
         },
     })
-    const msg = data.data.value.choices[0].message
+    const msg = data.value.choices[0].message
     const messageContent = msg.content
     if (messageContent[0] == '{') {
         let appointment = JSON.parse(messageContent)
@@ -169,7 +169,7 @@ const askAI = async () => {
             },
         }, true)
     } else {
-        messages.value.push(data.data.value.choices[0].message)
+        messages.value.push(msg)
     }
     say(messages.value[messages.value.length - 1].content)
     isAskingAI.value = false

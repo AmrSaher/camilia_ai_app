@@ -18,6 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const getUser = async () => {
+        if (user.value != {}) return
         const { data } = await useApi('/auth/user', {}, true)
         user.value = data.value
     }
@@ -76,6 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         if (!decoded) {
             clearJWTToken()
+            user.value = {}
         }
         return decoded
     }

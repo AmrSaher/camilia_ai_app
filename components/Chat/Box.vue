@@ -62,11 +62,16 @@ const emit = defineEmits([
 const chatBox = ref()
 const promptsStore = usePromptsStore()
 const isRecording = ref(false)
-const messages = ref([])
 const message = ref('')
 const isAskingAI = ref(false)
 let recognition = null
 let speech = null
+const { data:messages , error } = useAsyncData('messages', async () => {
+    const { data, error } = await useApi('/messages', {}, true)
+    return data.value
+})
+
+watch(messages.value, () => setTimeout(() => scrollDownChatBox(), 10))
 
 onMounted(() => {
     window.SpeechRecognition = window.webkitSpeechRecognition
@@ -87,11 +92,13 @@ onMounted(() => {
             content: message.value,
             role: 'user',
         })
+        message.value = ''
+        await storeMessage()
         await askAI()
     })
 
     speech = new window.SpeechSynthesisUtterance()
-    let voices = window.speechSynthesis.getVoices()
+    // let voices = window.speechSynthesis.getVoices()
 
     window.speechSynthesis.onvoiceschanged = () => {
         let voices = window.speechSynthesis.getVoices()
@@ -106,8 +113,6 @@ onMounted(() => {
     }
 })
 
-watch(messages.value, () => setTimeout(() => scrollDownChatBox(), 50))
-
 const close = () => emit('close')
 const record = () => {
     if (isRecording.value || isAskingAI.value) return
@@ -120,10 +125,11 @@ const submitMessage = async () => {
         content: message.value,
         role: 'user',
     })
+    message.value = ''
+    await storeMessage()
     await askAI()
 }
 const askAI = async () => {
-    message.value = ''
     isAskingAI.value = true
     const { LLM_API_URL, LLM_API_KEY } = useRuntimeConfig().public
     const data = await useFetch(LLM_API_URL, {
@@ -171,6 +177,7 @@ const askAI = async () => {
     } else {
         messages.value.push(data.data.value.choices[0].message)
     }
+    await storeMessage()
     say(messages.value[messages.value.length - 1].content)
     isAskingAI.value = false
 }
@@ -180,5 +187,11 @@ const say = (text) => {
 }
 const scrollDownChatBox = () => {
     chatBox.value.scrollTop = chatBox.value.scrollHeight
+}
+const storeMessage = async () => {
+    await useApi('/messages', {
+        method: 'post',
+        body: messages.value[messages.value.length - 1],
+    }, true)
 }
 </script>

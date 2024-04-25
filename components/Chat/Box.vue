@@ -21,11 +21,12 @@
       class="absolute top-[80px] left-0 w-full h-[calc(100%-80px)] rounded-bl-lg rounded-br-lg flex flex-col justify-between"
     >
       <div class="flex flex-col gap-2 p-2 overflow-y-auto" ref="chatBox">
-        <p class="w-full flex" :style="`justify-content: ${msg.role == 'user' ? 'end' : 'start'}`" v-for="msg in messages" :key="msg">
+        <p class="w-full max-w-full flex" :style="`justify-content: ${msg.role == 'user' ? 'end' : 'start'}`" v-for="msg in messages" :key="msg">
           <span
-            class="p-2 rounded-md"
+            v-html="renderMarkdown(msg.content)"
+            class="p-2 max-w-full rounded-md"
             :style="`background: ${msg.role == 'user' ? '#141414' : '#fff'}; color: ${msg.role == 'user' ? '#fff' : '#141414'}`"
-            >{{ msg.content }}</span>
+            ></span>
         </p>
       </div>
       <form @submit.prevent="submitMessage" class="w-full relative flex justify-between items-center p-2 gap-3">
@@ -53,6 +54,10 @@
 </template>
 
 <script setup>
+import MarkdownIt from 'markdown-it'
+import 'prismjs/themes/prism.css'
+import Prism from 'prismjs'
+
 const { isOpened } = defineProps([
     'isOpened'
 ])
@@ -66,14 +71,25 @@ const message = ref('')
 const isAskingAI = ref(false)
 let recognition = null
 let speech = null
-const { data:messages , error } = useAsyncData('messages', async () => {
+const md = new MarkdownIt({
+    highlight: (str, lang) => {
+        if (lang && Prism.languages[lang]) {
+            return `<pre class="language-${lang}" style="max-width: 100%"><code>${Prism.highlight(str, Prism.languages[lang], lang)}</code></pre>`
+        }
+        return `<pre class="language-plaintext" style="max-width: 100%"><code>${md.utils.escapeHtml(str)}</code></pre>`
+    }
+})
+
+const { data:messagesData , error } = useAsyncData('messages', async () => {
     const { data, error } = await useApi('/messages', {}, true)
     return data.value
 })
+const messages = ref(messagesData.value)
 
 watch(messages.value, () => setTimeout(() => scrollDownChatBox(), 10))
 
 onMounted(() => {
+    scrollDownChatBox()
     window.SpeechRecognition = window.webkitSpeechRecognition
     recognition = new window.SpeechRecognition()
     recognition.interimResults = true
@@ -178,7 +194,7 @@ const askAI = async () => {
         messages.value.push(data.data.value.choices[0].message)
     }
     await storeMessage()
-    say(messages.value[messages.value.length - 1].content)
+    // say(messages.value[messages.value.length - 1].content)
     isAskingAI.value = false
 }
 const say = (text) => {
@@ -193,5 +209,8 @@ const storeMessage = async () => {
         method: 'post',
         body: messages.value[messages.value.length - 1],
     }, true)
+}
+const renderMarkdown = (text) => {
+    return md.render(text)
 }
 </script>

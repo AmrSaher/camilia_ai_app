@@ -194,7 +194,7 @@ const askAI = async () => {
         messages.value.push(data.data.value.choices[0].message)
     }
     await storeMessage()
-    // say(messages.value[messages.value.length - 1].content)
+    say(messages.value[messages.value.length - 1].content)
     isAskingAI.value = false
 }
 const say = (text) => {

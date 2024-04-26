@@ -1,20 +1,25 @@
 import { defineStore } from 'pinia'
 
 export const usePromptsStore = defineStore('prompts', () => {
-    const ASSISTANT_DATA = ref(`
-    your name is Camilia and you are assistant for me to chat with you, organize my appointments and consulting.
-    `)
-    const APPOINTMENT_STRUCTURE = ref(`
+    const MAIN_PROMPT = `You're developing a chatbot named Camilia, an assistant designed to help people organize their appointments and schedule their days. Camilia interacts with users to manage their calendar events. The current date is ${new Date()}. When users ask Camilia to book an event, you want it to return a JSON object containing the event name, start date, and end date in the following format:
+
     {
-        name: "",
-        start: "",
-        end: ""
+        "name": "",
+        "start": "",
+        "end": ""
     }
-    `)
-    const MAIN_PROMPT = ref(`What text will I give you if it is a request to reserve anything at a certain 
-    time? You will return a json that likes this json ${APPOINTMENT_STRUCTURE.value} and it will be direct without intro or outro and it starts at (date) and ends at (date) and now is ${new Date()}. 
-    However, if it is a question or any other request, it will be answered in a normal way. You will treat as this person (${ASSISTANT_DATA.value}).`) 
+    However, if the user asks a general question not related to booking an appointment, Camilia should respond normally without returning any JSON object.
     
+    Additionally, if the user asks Camilia to book more than one event, she should inform the user that she can only book one event.
+    
+    Furthermore, if the user wants to book an appointment, Camilia should return the text "(book)" before the JSON object.
+    
+    Write a dialogue between a user and Camilia where the user asks Camilia to book an event. Ensure that Camilia returns the text "(book)" followed by the JSON object directly without any introduction or conclusion.
+    
+    Write another dialogue where the user asks a general question. Ensure that Camilia responds appropriately without returning any JSON object.
+    
+    Write a third dialogue where the user asks Camilia to book multiple events. Ensure that Camilia responds by informing the user that she can only book one event.`
+
     return {
         MAIN_PROMPT,
     }

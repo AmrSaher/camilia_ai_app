@@ -154,7 +154,7 @@ const askAI = async () => {
         body: {
             "model": "meta-llama/Llama-3-8b-chat-hf",
             "max_tokens": 512,
-            "temperature": 0.7,
+            "temperature": 0,
             "top_p": 0.7,
             "top_k": 50,
             "repetition_penalty": 1,
@@ -175,9 +175,8 @@ const askAI = async () => {
     })
     const msg = data.data.value.choices[0].message
     const messageContent = msg.content
-    if (messageContent[0] == '{') {
-        let appointment = JSON.parse(messageContent)
-        console.log(appointment)
+    if (messageContent.substring(0, 6) == '(book)') {
+        let appointment = JSON.parse(messageContent.replace('(book)', '').trim())
         messages.value.push({
             content: 'Appointment booked successfully!',
             role: 'assistant',
@@ -186,8 +185,8 @@ const askAI = async () => {
             method: 'post',
             body: {
                 title: appointment.name,
-                start: appointment.start,
-                end: appointment.end,
+                start: new Date(appointment.start),
+                end: new Date(appointment.end),
             },
         }, true)
     } else {

@@ -84,7 +84,7 @@ const { data:messagesData , error } = useAsyncData('messages', async () => {
     const { data, error } = await useApi('/messages', {}, true)
     return data.value
 })
-const messages = ref(messagesData.value)
+const messages = ref(messagesData.value || [])
 
 watch(messages.value, () => setTimeout(() => scrollDownChatBox(), 10))
 
